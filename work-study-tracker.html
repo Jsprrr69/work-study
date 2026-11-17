@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Work &amp; Study Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#eef1f4; --card:#fbfcfd; --ink:#1b2733; --soft:#5d6b79; --line:#cfd6dd;
+  --study:#2f5bea; --study-bg:#dfe7fd; --work:#b86e0c; --work-bg:#f8e8cf; --ok:#2e8b57;
+  --grid:rgba(27,39,51,.06);
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141b22; --card:#1c252e; --ink:#e8edf1; --soft:#93a1ae; --line:#2f3b47;
+    --study:#7c9bff; --study-bg:#24325e; --work:#f0a64a; --work-bg:#4a3414; --ok:#5fcf93; --grid:rgba(255,255,255,.05);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141b22; --card:#1c252e; --ink:#e8edf1; --soft:#93a1ae; --line:#2f3b47;
+  --study:#7c9bff; --study-bg:#24325e; --work:#f0a64a; --work-bg:#4a3414; --ok:#5fcf93; --grid:rgba(255,255,255,.05);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 Figtree,system-ui,sans-serif;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+main{max-width:640px;margin:0 auto;padding:20px 16px 64px}
+h1,h2{font-family:"Bricolage Grotesque",Figtree,sans-serif;margin:0}
+h1{font-size:1.6rem;font-weight:700}
+h2{font-size:1.1rem;margin:28px 0 10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sub{color:var(--soft);font-size:.9rem}
+nav{display:flex;gap:4px;margin:16px 0;border-bottom:2px solid var(--line)}
+nav button{flex:1;background:none;border:0;padding:10px 4px;font:600 .95rem Figtree,sans-serif;color:var(--soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--study);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.clock{font:700 clamp(3rem,16vw,4.6rem)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0 14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.seg button{border:0;background:transparent;padding:8px 18px;font:600 .95rem Figtree,sans-serif;color:var(--soft);cursor:pointer}
+.seg button.on[data-t="study"]{background:var(--study);color:#fff}
+.seg button.on[data-t="work"]{background:var(--work);color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+input,select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
+input[type=text]{flex:1 1 160px}
+.btn{border:0;border-radius:8px;padding:10px 20px;font:600 1rem Figtree,sans-serif;cursor:pointer;background:var(--ink);color:var(--paper)}
+.btn.go{background:var(--ok);color:#fff}
+.btn.stop{background:#c0392b;color:#fff}
+.btn.ghost{background:transparent;color:var(--soft);border:1px solid var(--line);padding:8px 12px;font-size:.9rem}
+.big{width:100%;padding:14px;font-size:1.1rem;margin-top:10px}
+ul{list-style:none;margin:0;padding:0}
+li.item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+li.item:last-child{border-bottom:0}
+.tag{font-size:.78rem;font-weight:600;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.tag.study{background:var(--study-bg);color:var(--study)}
+.tag.work{background:var(--work-bg);color:var(--work)}
+.grow{flex:1;min-width:0}
+.grow b{font-weight:600;display:block;overflow-wrap:anywhere}
+.grow span{color:var(--soft);font-size:.85rem}
+.x{background:none;border:0;color:var(--soft);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+.chk{width:22px;height:22px;accent-color:var(--ok);flex:none}
+.done b{text-decoration:line-through;color:var(--soft)}
+.late{color:#c0392b!important;font-weight:600}
+.empty{color:var(--soft);padding:12px 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stat strong{display:block;font:700 1.5rem "Bricolage Grotesque",sans-serif}
+.bars{display:flex;align-items:flex-end;gap:8px;height:170px;padding:8px 0 0}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.stack{width:100%;display:flex;flex-direction:column-reverse;justify-content:flex-start;flex:1;align-items:stretch}
+.stack div{width:100%}
+.stack .s{background:var(--study)} .stack .w{background:var(--work)}
+.col small{color:var(--soft);font-size:.75rem}
+.col small.today{color:var(--ink);font-weight:700}
+.legend{display:flex;gap:14px;font-size:.85rem;color:var(--soft);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+.subj{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}
+details{margin-top:14px} summary{cursor:pointer;color:var(--soft);font-weight:600}
+#clList{margin-top:6px}
+.cl-add{margin-bottom:6px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Work &amp; Study Log</h1>
+    <span class="sub" id="dateLabel"></span>
+  </div>
+
+  <nav role="tablist">
+    <button role="tab" data-v="today" aria-selected="true">Today</button>
+    <button role="tab" data-v="tasks" aria-selected="false">Tasks</button>
+    <button role="tab" data-v="week" aria-selected="false">This week</button>
+  </nav>
+
+  <section id="v-today">
+    <div class="card">
+      <div class="seg" id="typeSeg">
+        <button data-t="study" class="on">Study</button>
+        <button data-t="work">Work</button>
+      </div>
+      <div class="clock" id="clock">0:00:00</div>
+      <div class="row">
+        <input type="text" id="subject" list="subjects" placeholder="What are you working on?" aria-label="Subject">
+        <datalist id="subjects"></datalist>
+      </div>
+      <button class="btn go big" id="toggle">Start timer</button>
+      <details>
+        <summary>Add a past session</summary>
+        <div class="row" style="margin-top:10px">
+          <input type="text" id="mSubject" placeholder="Subject" aria-label="Past session subject">
+          <input type="number" id="mMins" min="1" max="1440" placeholder="Minutes" style="width:110px" aria-label="Minutes">
+          <button class="btn" id="mAdd">Add</button>
+        </div>
+        <span class="sub">Uses the Study / Work choice above.</span>
+      </details>
+    </div>
+    <h2>Work checklist <span class="sub" id="clProg"></span></h2>
+    <div class="card">
+      <div class="row cl-add">
+        <input type="text" id="cText" placeholder="Add a checklist item" aria-label="Checklist item">
+        <button class="btn" id="cAdd">Add</button>
+      </div>
+      <ul id="clList"></ul>
+    </div>
+    <h2>Today’s sessions</h2>
+    <div class="card"><ul id="todayList"></ul></div>
+  </section>
+
+  <section id="v-tasks" hidden>
+    <div class="card">
+      <div class="row">
+        <input type="text" id="tTitle" placeholder="New task" aria-label="Task title">
+        <select id="tType" aria-label="Task type"><option value="study">Study</option><option value="work">Work</option></select>
+        <input type="date" id="tDue" aria-label="Due date">
+        <button class="btn" id="tAdd">Add task</button>
+      </div>
+    </div>
+    <h2>To do</h2>
+    <div class="card"><ul id="openList"></ul></div>
+    <h2>Done</h2>
+    <div class="card"><ul id="doneList"></ul></div>
+  </section>
+
+  <section id="v-week" hidden>
+    <div class="stats">
+      <div class="stat"><span class="sub">Study this week</span><strong id="sStudy">0h</strong></div>
+      <div class="stat"><span class="sub">Work this week</span><strong id="sWork">0h</strong></div>
+    </div>
+    <div class="card">
+      <div class="bars" id="bars"></div>
+      <div class="legend"><span><i style="background:var(--study)"></i>Study</span><span><i style="background:var(--work)"></i>Work</span></div>
+    </div>
+    <h2>Time by subject</h2>
+    <div class="card" id="subjList"></div>
+    <p class="sub" style="margin-top:20px">Your data stays in this browser. <button class="btn ghost" id="reset">Clear all data</button></p>
+  </section>
+</main>
+
+<script>
+(function(){
+  var KEY='workStudyLog.v1';
+  var S={sessions:[],tasks:[],running:null,type:'study'};
+  try{var raw=localStorage.getItem(KEY); if(raw){var p=JSON.parse(raw); if(p&&typeof p==='object') S=Object.assign(S,p);}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+  var $=function(id){return document.getElementById(id)};
+  function dkey(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(x<10?'0':'')+x;}
+  function fmt(m){m=Math.round(m);var h=Math.floor(m/60),r=m%60;return h?(h+'h '+(r?r+'m':'')).trim():r+'m';}
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function cap(t){return t==='study'?'Study':'Work';}
+
+  $('dateLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+
+  // tabs
+  document.querySelectorAll('nav button').forEach(function(b){
+    b.onclick=function(){
+      document.querySelectorAll('nav button').forEach(function(x){x.setAttribute('aria-selected',x===b);});
+      ['today','tasks','week'].forEach(function(v){$('v-'+v).hidden=(v!==b.dataset.v);});
+      render();
+    };
+  });
+
+  // type toggle
+  document.querySelectorAll('#typeSeg button').forEach(function(b){
+    b.onclick=function(){ if(S.running) return; S.type=b.dataset.t; save(); render(); };
+  });
+
+  // timer
+  function elapsed(){return S.running?Math.max(0,Math.floor((Date.now()-S.running.start)/1000)):0;}
+  function tick(){
+    var s=elapsed(),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+    $('clock').textContent=h+':'+(m<10?'0':'')+m+':'+(x<10?'0':'')+x;
+  }
+  setInterval(tick,1000);
+  $('toggle').onclick=function(){
+    if(!S.running){
+      S.running={start:Date.now(),type:S.type,subject:$('subject').value.trim()};
+    }else{
+      var mins=(Date.now()-S.running.start)/60000;
+      if(mins>=0.5){
+        S.sessions.push({id:uid(),type:S.running.type,subject:S.running.subject||'General',mins:mins,day:dkey(new Date(S.running.start))});
+      }
+      S.running=null; $('subject').value='';
+    }
+    save(); render();
+  };
+  $('mAdd').onclick=function(){
+    var m=parseInt($('mMins').value,10);
+    if(!m||m<1){$('mMins').focus();return;}
+    S.sessions.push({id:uid(),type:S.type,subject:$('mSubject').value.trim()||'General',mins:m,day:dkey(new Date())});
+    $('mMins').value='';$('mSubject').value='';save();render();
+  };
+
+  // tasks
+  $('tAdd').onclick=function(){
+    var t=$('tTitle').value.trim(); if(!t){$('tTitle').focus();return;}
+    S.tasks.push({id:uid(),title:t,type:$('tType').value,due:$('tDue').value,done:false});
+    $('tTitle').value='';$('tDue').value='';save();render();
+  };
+  $('tTitle').addEventListener('keydown',function(e){if(e.key==='Enter')$('tAdd').click();});
+
+  // checklist
+  $('cAdd').onclick=function(){
+    var t=$('cText').value.trim(); if(!t){$('cText').focus();return;}
+    S.checks=S.checks||[];
+    S.checks.push({id:uid(),text:t,done:false,day:dkey(new Date())});
+    $('cText').value='';save();render();$('cText').focus();
+  };
+  $('cText').addEventListener('keydown',function(e){if(e.key==='Enter')$('cAdd').click();});
+
+  $('reset').onclick=function(){
+    if(confirm('Delete all sessions and tasks? This can’t be undone.')){S={sessions:[],tasks:[],running:null,type:'study'};save();render();}
+  };
+
+  document.addEventListener('click',function(e){
+    var d=e.target.closest('[data-del]'); if(!d) return;
+    var id=d.dataset.id;
+    if(d.dataset.del==='s') S.sessions=S.sessions.filter(function(x){return x.id!==id;});
+    else if(d.dataset.del==='c') S.checks=(S.checks||[]).filter(function(x){return x.id!==id;});
+    else S.tasks=S.tasks.filter(function(x){return x.id!==id;});
+    save();render();
+  });
+  document.addEventListener('change',function(e){
+    if(!e.target.classList.contains('chk')) return;
+    if(e.target.dataset.c){
+      (S.checks||[]).forEach(function(c){if(c.id===e.target.dataset.id)c.done=e.target.checked;});
+    }else{
+      S.tasks.forEach(function(t){if(t.id===e.target.dataset.id)t.done=e.target.checked;});
+    }
+    save();render();
+  });
+
+  function taskLi(t){
+    var today=dkey(new Date()),due='';
+    if(t.due){
+      var late=!t.done&&t.due<today;
+      due='<span class="'+(late?'late':'')+'">'+(late?'Overdue · ':'Due ')+new Date(t.due+'T00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</span>';
+    }
+    return '<li class="item'+(t.done?' done':'')+'"><input type="checkbox" class="chk" data-id="'+t.id+'" '+(t.done?'checked':'')+' aria-label="Mark done">'+
+      '<div class="grow"><b>'+esc(t.title)+'</b>'+due+'</div><span class="tag '+t.type+'">'+cap(t.type)+'</span>'+
+      '<button class="x" data-del="t" data-id="'+t.id+'" aria-label="Delete task">×</button></li>';
+  }
+
+  function render(){
+    // timer state
+    document.querySelectorAll('#typeSeg button').forEach(function(b){
+      var t=S.running?S.running.type:S.type; b.classList.toggle('on',b.dataset.t===t);
+    });
+    var tg=$('toggle');
+    tg.textContent=S.running?'Stop and save':'Start timer';
+    tg.className='btn big '+(S.running?'stop':'go');
+    if(S.running&&!$('subject').value) $('subject').value=S.running.subject;
+    tick();
+
+    // subjects datalist
+    var seen={Thesis:1};
+    S.sessions.forEach(function(s){seen[s.subject]=1;});
+    $('subjects').innerHTML=Object.keys(seen).map(function(k){return '<option value="'+esc(k)+'">';}).join('');
+
+    // today list
+    var today=dkey(new Date());
+    var ts=S.sessions.filter(function(s){return s.day===today;}).reverse();
+    var tot=ts.reduce(function(a,s){return a+s.mins;},0);
+    $('todayList').innerHTML=ts.length?ts.map(function(s){
+      return '<li class="item"><div class="grow"><b>'+esc(s.subject)+'</b><span>'+fmt(s.mins)+'</span></div><span class="tag '+s.type+'">'+cap(s.type)+'</span>'+
+        '<button class="x" data-del="s" data-id="'+s.id+'" aria-label="Delete session">×</button></li>';
+    }).join('')+'<li class="item"><div class="grow"><b>Total today</b></div><b>'+fmt(tot)+'</b></li>'
+    :'<li class="empty">No sessions yet. Pick Study or Work and start the timer.</li>';
+
+    // checklist (unfinished items carry over to the next day)
+    S.checks=S.checks||[];
+    var cl=S.checks.filter(function(c){return c.day===today||(!c.done&&c.day<today);});
+    var cDone=cl.filter(function(c){return c.done;}).length;
+    $('clProg').textContent=cl.length?'· '+cDone+' of '+cl.length+' done':'';
+    $('clList').innerHTML=cl.length?cl.map(function(c){
+      return '<li class="item'+(c.done?' done':'')+'"><input type="checkbox" class="chk" data-c="1" data-id="'+c.id+'" '+(c.done?'checked':'')+' aria-label="Mark done">'+
+        '<div class="grow"><b>'+esc(c.text)+'</b>'+(c.day<today?'<span>Carried over</span>':'')+'</div>'+
+        '<button class="x" data-del="c" data-id="'+c.id+'" aria-label="Delete item">×</button></li>';
+    }).join(''):'<li class="empty">Nothing on the list. Add what you need to finish today.</li>';
+
+    // tasks
+    var open=S.tasks.filter(function(t){return !t.done;}).sort(function(a,b){return (a.due||'9999').localeCompare(b.due||'9999');});
+    var done=S.tasks.filter(function(t){return t.done;});
+    $('openList').innerHTML=open.length?open.map(taskLi).join(''):'<li class="empty">Nothing due. Add a task above.</li>';
+    $('doneList').innerHTML=done.length?done.map(taskLi).join(''):'<li class="empty">Finished tasks show up here.</li>';
+
+    // week
+    var days=[],i;
+    for(i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d);}
+    var sums=days.map(function(d){var k=dkey(d),r={study:0,work:0};S.sessions.forEach(function(s){if(s.day===k)r[s.type]+=s.mins;});return r;});
+    var max=Math.max.apply(null,sums.map(function(r){return r.study+r.work;}).concat([60]));
+    $('bars').innerHTML=days.map(function(d,i){
+      var r=sums[i];
+      return '<div class="col" title="'+fmt(r.study)+' study, '+fmt(r.work)+' work"><div class="stack">'+
+        '<div class="s" style="height:'+(r.study/max*100)+'%"></div><div class="w" style="height:'+(r.work/max*100)+'%"></div></div>'+
+        '<small class="'+(i===6?'today':'')+'">'+d.toLocaleDateString(undefined,{weekday:'short'})+'</small></div>';
+    }).join('');
+    $('sStudy').textContent=fmt(sums.reduce(function(a,r){return a+r.study;},0));
+    $('sWork').textContent=fmt(sums.reduce(function(a,r){return a+r.work;},0));
+    var keys=days.map(dkey),bySub={};
+    S.sessions.forEach(function(s){if(keys.indexOf(s.day)>-1){bySub[s.subject]=(bySub[s.subject]||0)+s.mins;}});
+    var list=Object.keys(bySub).sort(function(a,b){return bySub[b]-bySub[a];});
+    $('subjList').innerHTML=list.length?list.map(function(k){return '<div class="subj"><span>'+esc(k)+'</span><b>'+fmt(bySub[k])+'</b></div>';}).join(''):'<span class="empty">Log a session to see your breakdown.</span>';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
